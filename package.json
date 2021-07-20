@@ -1,0 +1,36 @@
+{
+  "name": "ttb",
+  "version": "1.0.0",
+  "description": "Prueba tecnica",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorgestivenm/TTB.git"
+  },
+  "keywords": [
+    "api",
+    "docker",
+    "dynamo"
+  ],
+  "author": "Jorge Steven Martinez Osorio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jorgestivenm/TTB/issues"
+  },
+  "homepage": "https://github.com/jorgestivenm/TTB#readme",
+  "dependencies": {
+    "ajv": "^8.6.2",
+    "ajv-formats": "^2.1.0",
+    "ajv-keywords": "^5.0.0",
+    "aws-sdk": "^2.948.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "i": "^0.3.6",
+    "morgan": "^1.10.0",
+    "winston": "^3.3.3"
+  }
+}
