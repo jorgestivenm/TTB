@@ -12,6 +12,3 @@ exports.getAjvInstace = () => {
   const ajv = createAjvInstace();
   return ajv;
 };
-
-
-// module.exports = getAjvInstace;

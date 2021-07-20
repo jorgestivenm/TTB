@@ -1,5 +1,4 @@
-// const { NextFunction, Request, Response } = require('express');
-const userService = require('../../../domain/entities/services/userApiServices')
+const userService = require('../../../domain/entities/services/userApiServices');
 
 exports.createUser = async (req, res, next) => {
   userService.create(req, res, next);
@@ -15,4 +14,8 @@ exports.updateUser = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
   userService.delete(req, res, next);
+};
+
+exports.getUser = async (req, res, next) => {
+  userService.findById(req, res, next);
 };

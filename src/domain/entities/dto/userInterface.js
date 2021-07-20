@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 const table = "Users";
-const logger = require('../../../utils/logger')
+const logger = require('../../../utils/logger');
 
 const InsertUserI = (data) => {
 
@@ -65,4 +65,14 @@ const FindAllUserI = () => {
   return params
 };
 
-module.exports =  { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI }
+const FindUserI = (data) => {
+  let params = {
+    Key: AWS.DynamoDB.Converter.marshall({
+      userid: data,
+    }),
+    TableName: table,
+  }; 
+  return params
+};
+
+module.exports =  { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI, FindUserI };

@@ -8,4 +8,6 @@ RUN npm install
 
 COPY . .
 
+RUN mkdir logs
+
 CMD ["npm", "start"]

@@ -5,9 +5,9 @@ const VALID_DDB_TYPES = {
   n: 'N',
   nULLValue: 'NULL',
   bOOL: 'BOOL'
-}
+};
 
-const pipe = (...fns) => x => fns.reduce((res, fn) => fn(res), x)
+const pipe = (...fns) => x => fns.reduce((res, fn) => fn(res), x);
 
 const getValidDDBObject = pipe(
   JSON.stringify,
@@ -16,6 +16,6 @@ const getValidDDBObject = pipe(
       str => str.replace(new RegExp(`"${invalidType}":`, 'g'), `"${validType}":`)
   ),
   JSON.parse
-)
+);
 
 module.exports = getValidDDBObject;

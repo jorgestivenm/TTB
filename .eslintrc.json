@@ -1,0 +1,26 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "standard",
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "parser": "babel-eslint", 
+  "rules": {
+    "max-len": ["error",
+      {
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true
+      }],
+    "require-jsdoc": 0
+  }
+}
+

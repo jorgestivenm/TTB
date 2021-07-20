@@ -20,10 +20,10 @@ exports.updateUserSchema = {
   additionalProperties: false
 };
 
-exports.deleteUserSchema = {
+exports.UserIdSchema = {
   type: "object",
   properties: {
-    userid: {type: "integer"},
+    userid: {type: "string"},
   },
   required: ["userid"],
   additionalProperties: false

@@ -1,7 +1,7 @@
-const { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI } = require('../dto/userInterface');
+const { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI, FindUserI } = require('../dto/userInterface');
 const userRepository = require('../../repository/userRepository');
 const logger = require('../../../utils/logger');
-const { registerUserSchema, updateUserSchema, deleteUserSchema } = require('../schemas/userSchemas');
+const { registerUserSchema, updateUserSchema, UserIdSchema } = require('../schemas/userSchemas');
 const { getAjvInstace } = require('../../../utils/ajvSingleton');
 const ajv = getAjvInstace();
 
@@ -73,8 +73,7 @@ exports.update = async (req, res, next) => {
   }
 
   return res.status(200).send({
-    message: 'User has been updated successfully',
-    data: answ[1]
+    message: 'User has been updated successfully'
   });
 }
 
@@ -82,9 +81,14 @@ exports.findAll = async (req, res, next) => {
   const params = FindAllUserI();
   let answ = await userRepository.getAllUsrs(params);
   if (answ[0] === false) {
-    next(new DatabaseDaoError("Error on database getting all users"));
+    return next(new DatabaseDaoError("Error on database getting all users"));
   }
 
+  if (answ[1] === undefined) {
+    return res.status(404).send(
+      new NotFoundError("Error - there is no User")
+    );
+  }
   return res.status(200).send({
     message: 'Users found',
     data: answ[1]
@@ -92,7 +96,46 @@ exports.findAll = async (req, res, next) => {
 }
 
 exports.delete = async (req, res, next) => {
-  const ajv_userValidate = ajv.compile(deleteUserSchema);
+  const ajv_userValidate = ajv.compile(UserIdSchema);
+  if (!ajv_userValidate(req.query)) {
+    logger.error('Data validation error, check the data');
+    return res
+      .status(400)
+      .send(
+        new ProcessingRequestError(
+          "Error cheking the input information, please check the information and required fields",
+          ajv_userValidate.errors
+        )
+      );
+  }
+  let userid = parseInt(req.query.userid);
+  let params = FindUserI(userid);
+  let answ = await userRepository.getUserById(params);
+  if (answ[0] === false) {
+    return next(new DatabaseDaoError("Error on database getting the user"));
+  }
+
+  if (answ[1] === undefined) {
+    return res.status(404).send(
+      new NotFoundError("Error - this user does not exist, please check the data")
+    );
+  }
+  
+  params = DeleteUserI(userid);
+  answ = await userRepository.deleteUsr(params);
+  if (!answ[0]) {
+    return next(new DatabaseDaoError("Error on database deleting the user"));
+  }
+
+  return res.status(200).send({
+    message: 'User has been deleted successfully'
+  });
+}
+
+exports.findById = async (req, res, next) => {
+
+  const ajv_userValidate = ajv.compile(UserIdSchema);
+  logger.info(req.query);
   if (!ajv_userValidate(req.query)) {
     logger.error('Data validation error, check the data');
     return res
@@ -106,13 +149,19 @@ exports.delete = async (req, res, next) => {
   }
 
   let userid = parseInt(req.query.userid);
-  const params = DeleteUserI(userid);
-  let answ = await userRepository.deleteUsr(params);
-  if (!answ[0]) {
-    return next(new DatabaseDaoError("Error on database deleting the user"));
+  const params = FindUserI(userid);
+  let answ = await userRepository.getUserById(params);
+  if (answ[0] === false) {
+    return next(new DatabaseDaoError("Error on database getting the user"));
   }
 
+  if (answ[1] === undefined) {
+    return res.status(404).send(
+      new NotFoundError("Error - this user does not exist, please check the data")
+    );
+  }
   return res.status(200).send({
-    message: 'User has been deleted successfully'
+    message: 'User found',
+    data: answ[1]
   });
 }

@@ -1,7 +1,7 @@
-var AWS = require('aws-sdk')
-const clientDB = require('../../data/db/dynamoDBConnection')
-const logger = require('../../utils/logger')
-const getValidDDBObject = require('../../utils/validddbobj')
+var AWS = require('aws-sdk');
+const clientDB = require('../../data/db/dynamoDBConnection');
+const logger = require('../../utils/logger');
+const getValidDDBObject = require('../../utils/validddbobj');
 
 exports.createUsr = async (params) => {
   try {
@@ -22,8 +22,7 @@ exports.updateUsr = async (params) => {
     logger.error("Error", err);
     return [false, null];
   }
-  let item = AWS.DynamoDB.Converter.unmarshall(data)
-  return [true, item];
+  return [true, null];
 };
 
 exports.getAllUsrs = async (params) => {
@@ -31,16 +30,22 @@ exports.getAllUsrs = async (params) => {
   let items = {};
   try {
     data = await clientDB.scan(params).promise();
-    logger.info('Success - found all users');
   } catch (err) {
     logger.error('Error', err);
     return [false, null]
   }
-  const itemsList = getValidDDBObject(data.Items);
-  for (i=0; i < itemsList.length; i++) {
-    items[`${i+1}`] = AWS.DynamoDB.Converter.unmarshall(itemsList[i]);
+  let validObject;
+  try {
+    validObject = getValidDDBObject(data.Items)
+  } catch (error){
+    logger.info('Warning - there is no user');
+    return [true, undefined]
   }
-  logger.info(items);
+
+  for (i=0; i < validObject.length; i++) {
+    items[`${i+1}`] = AWS.DynamoDB.Converter.unmarshall(validObject[i]);
+  }
+  logger.info('Success - found all users');
   return [true, items];
 };
 
@@ -55,3 +60,24 @@ exports.deleteUsr = async (params) => {
   return [true, null];
 };
 
+
+exports.getUserById = async (params) => {
+  let data;
+  try {
+    data = await clientDB.getItem(params).promise();    
+  } catch (err) {
+    logger.error('Error', err);
+    return [false, null]
+  }
+
+  let validObject;
+  try {
+    validObject = getValidDDBObject(data.Item)
+  } catch (error){
+    logger.info('Warning - there is no user');
+    return [true, undefined]
+  }
+  const item = AWS.DynamoDB.Converter.unmarshall(validObject);
+  logger.info('Success - User found');
+  return [true, item];
+}; 

@@ -173,4 +173,4 @@ class ServerAvailabilityError extends HttpError {
 module.exports = {ProcessingRequestError, NotFoundError, FileTypeError, RequestDependencyError,
   DatabaseDaoError,AuthenticationError, AuthorizationError, ConflictError,
   FulfillPreconditionError, ProcessingEntityError, ServerError,
-  MethodAvailabilityError, ServerAvailabilityError}
+  MethodAvailabilityError, ServerAvailabilityError};

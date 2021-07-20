@@ -29,4 +29,5 @@ function errorHandler(err, req, res, _next) {
     res.status(error.statusCode).send(jsonError);
   }
 }
- module.exports = { routeNotFound, errorHandler}
+
+ module.exports = { routeNotFound, errorHandler};

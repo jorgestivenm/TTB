@@ -1,8 +1,8 @@
 const express = require('express');
-const httpLogger = require('./utils/httpLogger')
+const httpLogger = require('./utils/httpLogger');
 const app = express();
-const router_api = require('./data/api/routes/router')
-const cors = require('cors')
+const router_api = require('./data/api/routes/router');
+const cors = require('cors');
 const {
   errorHandler,
   routeNotFound,
