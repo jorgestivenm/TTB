@@ -133,9 +133,7 @@ exports.delete = async (req, res, next) => {
 }
 
 exports.findById = async (req, res, next) => {
-
   const ajv_userValidate = ajv.compile(UserIdSchema);
-  logger.info(req.query);
   if (!ajv_userValidate(req.query)) {
     logger.error('Data validation error, check the data');
     return res
