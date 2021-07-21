@@ -1,13 +1,8 @@
 FROM node:14
 WORKDIR /app
-EXPOSE 3000
-
 COPY package*.json ./
-
 RUN npm install
-
 COPY . .
-
-RUN mkdir logs
-
+# RUN mkdir logs
+EXPOSE 3000
 CMD ["npm", "start"]

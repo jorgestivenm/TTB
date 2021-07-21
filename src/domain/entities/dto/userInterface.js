@@ -1,18 +1,24 @@
 const AWS = require("aws-sdk");
-const table = "Users";
+const table = "User2";
 const logger = require('../../../utils/logger');
+const bcrypt = require("bcrypt");
 
-const InsertUserI = (data) => {
-
+const InsertUserI = async (data) => {
+  // generate salt to hash password
+  const salt = await bcrypt.genSalt(10);
+  // now we set user password to hashed password
+  data.password = await bcrypt.hash(data.password, salt);
+  let item = AWS.DynamoDB.Converter.marshall(data)
   return {
     TableName: table,
-    Item: AWS.DynamoDB.Converter.marshall(data),
+    Item: item
   }
 };
 
 const DeleteUserI = (data) => {
   key = {
-    userid: data
+    userid: data.userid,
+    email: data.email,
   }
   return {
     Key: AWS.DynamoDB.Converter.marshall(key),
@@ -22,13 +28,23 @@ const DeleteUserI = (data) => {
 
 const UpdateUserI = (data) => {
 
+  function buildExpressionNames (obj) {
+    let keys = Object.keys(obj);
+    let attNames = {};
+    for (i = 0; i < keys.length; i++) {
+      let expatt = String.fromCharCode(65+i);
+      attNames[`#${expatt}`] = `${keys[i]}`;
+    }
+    return attNames;
+  };
   function buildExpression (obj) {
     let keys = Object.keys(obj);
     let expstring = "set";
     
-    for (i = 1; i < keys.length; i++) {
-      let expatt = String.fromCharCode(96+i);
-      expstring = expstring.concat(' ',`${keys[i]} = :${expatt}`);
+    for (i = 0; i < keys.length; i++) {
+      let expatt = String.fromCharCode(97+i);
+      let expatt2 = String.fromCharCode(65+i);
+      expstring = expstring.concat(' ',`#${expatt2} = :${expatt}`);
       if (i != keys.length - 1) {
         expstring = expstring + ',';
       }
@@ -39,22 +55,29 @@ const UpdateUserI = (data) => {
   function buildAtributesExpression (obj ) {
     let values = Object.values(obj);
     let attValues = {};
-    for (i = 1; i < values.length; i++) {
-      let expatt = String.fromCharCode(96+i);
+    for (i = 0; i < values.length; i++) {
+      let expatt = String.fromCharCode(97+i);
       attValues[`:${expatt}`] = values[i]
     }
     return attValues;
   };
 
+  let uid = data.userid;
+  let uemail = data.email;
+  delete data.email;
+  delete data.userid;
+
   return {
     TableName: table,
     Key: AWS.DynamoDB.Converter.marshall({
-      userid: data.userid,
+      userid: uid,
+      email: uemail,
     }),
     // Define expressions for the new or updated attributes
     UpdateExpression: buildExpression(data),
     // Convert the attribute JavaScript object you are deleting to the required DynamoDB format
     ExpressionAttributeValues: AWS.DynamoDB.Converter.marshall(buildAtributesExpression(data)),
+    ExpressionAttributeNames: buildExpressionNames(data)
   }
 };
 
@@ -66,12 +89,14 @@ const FindAllUserI = () => {
 };
 
 const FindUserI = (data) => {
+  
   let params = {
-    Key: AWS.DynamoDB.Converter.marshall({
-      userid: data,
-    }),
-    TableName: table,
-  }; 
+    TableName : table,
+    KeyConditionExpression   : "userid = :v ",
+    ExpressionAttributeValues: {
+      ":v": {N: data}
+  }
+}; 
   return params
 };
 

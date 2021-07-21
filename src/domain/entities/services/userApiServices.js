@@ -1,7 +1,7 @@
 const { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI, FindUserI } = require('../dto/userInterface');
 const userRepository = require('../../repository/userRepository');
 const logger = require('../../../utils/logger');
-const { registerUserSchema, updateUserSchema, UserIdSchema } = require('../schemas/userSchemas');
+const { registerUserSchema, updateUserSchema, UserIdSchema, authUserSchema } = require('../schemas/userSchemas');
 const { getAjvInstace } = require('../../../utils/ajvSingleton');
 const ajv = getAjvInstace();
 
@@ -9,9 +9,14 @@ const {
   DatabaseDaoError,
   NotFoundError,
   ProcessingRequestError,
+  AuthenticationError,
 } = require('../../../data/api/http_error_handler/httpErrors');
 
 exports.create = async (req, res, next) => {
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
   const ajv_userValidate = ajv.compile(registerUserSchema);
   if (!ajv_userValidate(req.body)) {
     logger.error('Data validation error, check the data');
@@ -40,7 +45,7 @@ exports.create = async (req, res, next) => {
   }
 
   newuser['userid'] = cUserId + 1
-  const params = InsertUserI(newuser);
+  const params = await InsertUserI(newuser);
   let answ2 = await userRepository.createUsr(params);
   if (!answ2[0]) {
     return next(new DatabaseDaoError("Error on database creating the user"));
@@ -52,6 +57,10 @@ exports.create = async (req, res, next) => {
 }
 
 exports.update = async (req, res, next) => {
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
   const ajv_userValidate = ajv.compile(updateUserSchema);
   if (!ajv_userValidate(req.body)) {
     logger.error('Data validation error, check the data');
@@ -78,6 +87,10 @@ exports.update = async (req, res, next) => {
 }
 
 exports.findAll = async (req, res, next) => {
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
   const params = FindAllUserI();
   let answ = await userRepository.getAllUsrs(params);
   if (answ[0] === false) {
@@ -96,6 +109,10 @@ exports.findAll = async (req, res, next) => {
 }
 
 exports.delete = async (req, res, next) => {
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
   const ajv_userValidate = ajv.compile(UserIdSchema);
   if (!ajv_userValidate(req.query)) {
     logger.error('Data validation error, check the data');
@@ -108,7 +125,7 @@ exports.delete = async (req, res, next) => {
         )
       );
   }
-  let userid = parseInt(req.query.userid);
+  let userid = req.query.userid;
   let params = FindUserI(userid);
   let answ = await userRepository.getUserById(params);
   if (answ[0] === false) {
@@ -120,8 +137,8 @@ exports.delete = async (req, res, next) => {
       new NotFoundError("Error - this user does not exist, please check the data")
     );
   }
-  
-  params = DeleteUserI(userid);
+  let user = answ[1];
+  params = DeleteUserI(user);
   answ = await userRepository.deleteUsr(params);
   if (!answ[0]) {
     return next(new DatabaseDaoError("Error on database deleting the user"));
@@ -133,6 +150,10 @@ exports.delete = async (req, res, next) => {
 }
 
 exports.findById = async (req, res, next) => {
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
   const ajv_userValidate = ajv.compile(UserIdSchema);
   if (!ajv_userValidate(req.query)) {
     logger.error('Data validation error, check the data');
@@ -146,7 +167,7 @@ exports.findById = async (req, res, next) => {
       );
   }
 
-  let userid = parseInt(req.query.userid);
+  let userid = req.query.userid 
   const params = FindUserI(userid);
   let answ = await userRepository.getUserById(params);
   if (answ[0] === false) {
