@@ -1,0 +1,19 @@
+name: Create TTB envfile
+
+on: [push]
+
+jobs:
+
+  create-envfile:
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        ACCESS_KEY_ID_AWS: ${{ secrets.ACCESS_KEY_ID_AWS_TTB}}
+        SECRET_ACCESS_KEY_AWS: ${{secrets.SECRET_ACCESS_KEY_AWS_TTB}}
+        ENDPOINT: "http://dynamodb.us-east-2.amazonaws.com"
+        REGION: "us-east-2"
+        file_name: .env
