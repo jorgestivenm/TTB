@@ -1,19 +1,30 @@
-name: Create TTB envfile
+name: Create env file
 
-on: [push]
+on: [ push ]
+
+env: # env available for all jobs all steps
+  PRODUCTION: true
+  ENV_KEY_PROJECT_NAME: dot-env
 
 jobs:
-
-  create-envfile:
- 
+  
+  create-env-file:
+    name: Create env file
     runs-on: ubuntu-latest
- 
+    env: # env available for all steps of jobs
+      ENV_KEY_DEBUG: true
+      ENV_KEY_USERNAME: root
+    
     steps:
-    - name: Make envfile
-      uses: SpicyPizza/create-envfile@v1
-      with:
-        envkey_ACCESS_KEY_ID_AWS: ${{ secrets.ACCESS_KEY_ID_AWS_TTB}}
-        envkey_SECRET_ACCESS_KEY_AWS: ${{secrets.SECRET_ACCESS_KEY_AWS_TTB}}
-        envkey_ENDPOINT: "http://dynamodb.us-east-2.amazonaws.com"
-        envkey_REGION: "us-east-2"
-        file_name: .env
+      - uses: actions/checkout@v2
+      
+      - uses: iamsauravsharma/create-dotenv@v1.2.0
+        with:
+          env-prefix: '' # Optional (default: '')
+          file-name: '.env' # Optional (default : '.env')
+          directory: '.' # Optional (default: '.')
+        env: # env available for only this steps
+          ACCESS_KEY_ID_AWS: ${{ secrets.ACCESS_KEY_ID_AWS_TTB}}
+          SECRET_ACCESS_KEY_AWS: ${{secrets.SECRET_ACCESS_KEY_AWS_TTB}}
+          ENDPOINT: "http://dynamodb.us-east-2.amazonaws.com"
+          REGION: "us-east-2"
