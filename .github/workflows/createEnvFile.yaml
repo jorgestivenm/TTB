@@ -1,7 +1,6 @@
 name: Create envfile
 
 on: [push]
-
 jobs:
   
   build:
