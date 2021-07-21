@@ -1,14 +1,10 @@
-name: Create env file
+name: Create envfile
 
-on: [ push ]
-
-# env: # env available for all jobs all steps
-#   PRODUCTION: true
-#   ENV_KEY_PROJECT_NAME: dot-env
+on: [push]
 
 jobs:
   
-  create-env-file:
+  build:
     name: Create env file
     runs-on: ubuntu-latest
     # env: # env available for all steps of jobs
@@ -37,3 +33,11 @@ jobs:
           echo ENDPOINT="http://dynamodb.us-east-2.amazonaws.com" >> .env
           echo REGION="us-east-2" >> .env
           cat .env
+      - name: Create the .env file
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_ACCESS_KEY_ID_AWS: ${{ secrets.ACCESS_KEY_ID_AWS_TTB }}
+          envkey_SECRET_ACCESS_KEY_AWS: ${{secrets.SECRET_ACCESS_KEY_AWS_TTB}}
+          envkey_ENDPOINT: "http://dynamodb.us-east-2.amazonaws.com"
+          envkey_REGION: "us-east-2"
+          file_name: .env
