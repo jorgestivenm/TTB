@@ -38,6 +38,15 @@ jobs:
     environment: production
 
     steps:
+    - name: Create env file
+      run: |
+        touch .env
+        echo ACCESS_KEY_ID_AWS=${{ secrets.ACCESS_KEY_ID_AWS_TTB}} >> .env
+        echo SECRET_ACCESS_KEY_AWS=${{secrets.SECRET_ACCESS_KEY_AWS_TTB}} >> .env
+        echo ENDPOINT="http://dynamodb.us-east-2.amazonaws.com" >> .env
+        echo REGION="us-east-2" >> .env
+        cat .env
+
     - name: Checkout
       uses: actions/checkout@v2
 
