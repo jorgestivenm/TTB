@@ -29,7 +29,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "338055927824.dkr.ecr.us-east-2.amazonaws.com/ttb-repo",
+      "image": "338055927824.dkr.ecr.us-east-2.amazonaws.com/ttb-app",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -46,7 +46,7 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "ttb-repo"
+      "name": "ttb-app"
     }
   ],
   "placementConstraints": [],
@@ -56,7 +56,7 @@
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:338055927824:task-definition/ttb-app:1",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:338055927824:task-definition/ttb-app:3",
   "family": "ttb-app",
   "requiresAttributes": [
     {
@@ -72,7 +72,7 @@
   ],
   "networkMode": null,
   "cpu": "1024",
-  "revision": 1,
+  "revision": 3,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,

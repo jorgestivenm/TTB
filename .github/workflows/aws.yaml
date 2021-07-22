@@ -45,6 +45,8 @@ jobs:
         echo SECRET_ACCESS_KEY_AWS=${{secrets.SECRET_ACCESS_KEY_AWS_TTB}} >> .env
         echo ENDPOINT="http://dynamodb.us-east-2.amazonaws.com" >> .env
         echo REGION="us-east-2" >> .env
+        echo USERNAME_AUTH="jorgestivenm@gmail.com" >> .env
+        echo PASSWORD_AUTH="Admin1234" >> .env
         cat .env
 
     - name: Checkout
@@ -65,7 +67,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ttb-repo
+        ECR_REPOSITORY: ttb-app
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
@@ -80,7 +82,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: ttb-repo
+        container-name: ttb-app
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
