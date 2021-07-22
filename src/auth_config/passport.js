@@ -5,6 +5,7 @@ const userRepository = require('../domain/repository/userRepository');
 const logger = require('../utils/logger');
 const passportBasic = passport.use(new BasicStrategy(
   async function (username, password, done) {
+    // logger.info(`${username}:${password}`)
     const params = FindAllUserI();
     const answ = await userRepository.basicAuth(params, username, password);
     if (!answ[0]) {

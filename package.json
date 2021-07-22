@@ -28,6 +28,7 @@
     "ajv-formats": "^2.1.0",
     "ajv-keywords": "^5.0.0",
     "aws-sdk": "^2.948.0",
+    "base-64": "^1.0.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

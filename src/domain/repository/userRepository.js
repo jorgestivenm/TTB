@@ -74,37 +74,37 @@ exports.getUserById = async (params) => {
   }
 
   let validObject;
+  let item;
   try {
     validObject = getValidDDBObject(data.Items)
+    item = AWS.DynamoDB.Converter.unmarshall(validObject[0]);
   } catch (error){
     logger.info('Warning - there is no user');
     return [true, undefined]
   }
-  const item = AWS.DynamoDB.Converter.unmarshall(validObject[0]);
+  
+  if(Object.keys(item).length === 0 && item.constructor === Object) return [true, undefined]
+
   delete item.password;
   logger.info('Success - User found');
   return [true, item];
 }; 
 
 exports.basicAuth = async (params, username, password) => {
-  // let data;
-  // try {
-  //   data = await clientDB.query(params).promise();    
-  // } catch (err) {
-  //   logger.error('Error', err);
-  //   return [false, err]
-  // }
 
-  // let validObject;
-  // try {
-  //   validObject = getValidDDBObject(data.Item)
-  // } catch (error){
-  //   logger.info('Warning - there is no user');
-  //   return [true, undefined]
-  // }
-  // const item = AWS.DynamoDB.Converter.unmarshall(validObject);
+  function checkExist(validObject) {
+    let user;
+    for (i=0; i < validObject.length; i++) {
+      let item = AWS.DynamoDB.Converter.unmarshall(validObject[i]);
+      if (item.email == username){
+        user =  item;
+      }
+    }
+    if (!user) return false;
+    return user;
+   };
+
   let data;
-  let items = {};
   try {
     data = await clientDB.scan(params).promise();
   } catch (err) {
@@ -118,17 +118,9 @@ exports.basicAuth = async (params, username, password) => {
     logger.info('Warning - there is no user');
     return [true, undefined]
   }
-
-  let user = {};
-  for (i=0; i < validObject.length; i++) {
-    let item = AWS.DynamoDB.Converter.unmarshall(validObject[i]);
-    if (item.email === username){
-      user = item;
-    }
-  }
-
-
-
+ 
+  let user = checkExist(validObject);
+  if (!user) return [false, undefined];
 
   const validPassword = await bcrypt.compare(password, user.password);
   if(!validPassword) {

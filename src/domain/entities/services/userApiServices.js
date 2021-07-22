@@ -10,6 +10,7 @@ const {
   NotFoundError,
   ProcessingRequestError,
   AuthenticationError,
+  ConflictError,
 } = require('../../../data/api/http_error_handler/httpErrors');
 
 exports.create = async (req, res, next) => {
@@ -39,6 +40,8 @@ exports.create = async (req, res, next) => {
   let cUserId = 0;
   let users = answ1[1];
   for (const key in users) {
+    if(users[key].email == newuser.email) return next(
+      new ConflictError('There is another user with the same email'));
     if (users[key].userid > cUserId) {
       cUserId = users[key].userid;
     }
@@ -173,7 +176,6 @@ exports.findById = async (req, res, next) => {
   if (answ[0] === false) {
     return next(new DatabaseDaoError("Error on database getting the user"));
   }
-
   if (answ[1] === undefined) {
     return res.status(404).send(
       new NotFoundError("Error - this user does not exist, please check the data")
