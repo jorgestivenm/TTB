@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>domain/entities/services/userApiServices.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationError.html">AuthenticationError</a></li><li></li><li><a href="AuthorizationError.html">AuthorizationError</a></li><li><a href="ConflictError.html">ConflictError</a></li><li></li><li><a href="DatabaseDaoError.html">DatabaseDaoError</a></li><li><a href="FileTypeError.html">FileTypeError</a></li><li><a href="FulfillPreconditionError.html">FulfillPreconditionError</a></li><li></li><li><a href="HttpError.html">HttpError</a></li><li><a href="MethodAvailabilityError.html">MethodAvailabilityError</a></li><li></li><li><a href="NotFoundError.html">NotFoundError</a></li><li><a href="ProcessingEntityError.html">ProcessingEntityError</a></li><li><a href="ProcessingRequestError.html">ProcessingRequestError</a></li><li><a href="RequestDependencyError.html">RequestDependencyError</a></li><li><a href="ServerAvailabilityError.html">ServerAvailabilityError</a></li><li><a href="ServerError.html">ServerError</a></li></ul><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-awsConfig.html">awsConfig</a></li><li><a href="module-clientDB.html">clientDB</a></li><li><a href="module-GeneralErrors.html">GeneralErrors</a></li><li><a href="module-getAjvInstace.html">getAjvInstace</a></li><li><a href="module-getValidDDBObject.html">getValidDDBObject</a></li><li><a href="module-HttpErros.html">HttpErros</a></li><li><a href="module-looger.html">looger</a></li><li><a href="module-morgan.html">morgan</a></li><li><a href="module-passportBasic.html">passportBasic</a></li><li><a href="module-router.html">router</a></li></ul><h3>Global</h3><ul><li><a href="global.html#authStrategy">authStrategy</a></li><li><a href="global.html#authUserSchema">authUserSchema</a></li><li><a href="global.html#awsConfig">awsConfig</a></li><li><a href="global.html#basicAuth">basicAuth</a></li><li><a href="global.html#buildAtributesExpression">buildAtributesExpression</a></li><li><a href="global.html#buildExpression">buildExpression</a></li><li><a href="global.html#buildExpressionNames">buildExpressionNames</a></li><li><a href="global.html#checkExist">checkExist</a></li><li><a href="global.html#clientDB">clientDB</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#createUsr">createUsr</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#DeleteUserI">DeleteUserI</a></li><li><a href="global.html#deleteUsr">deleteUsr</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#findAll">findAll</a></li><li><a href="global.html#FindAllUserI">FindAllUserI</a></li><li><a href="global.html#findById">findById</a></li><li><a href="global.html#FindUserI">FindUserI</a></li><li><a href="global.html#getAllUsrs">getAllUsrs</a></li><li><a href="global.html#getReadableObject">getReadableObject</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#InsertUserI">InsertUserI</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#passportBasic">passportBasic</a></li><li><a href="global.html#prettyJson">prettyJson</a></li><li><a href="global.html#registerUserSchema">registerUserSchema</a></li><li><a href="global.html#routeNotFound">routeNotFound</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#UpdateUserI">UpdateUserI</a></li><li><a href="global.html#updateUserSchema">updateUserSchema</a></li><li><a href="global.html#updateUsr">updateUsr</a></li><li><a href="global.html#UserIdSchema">UserIdSchema</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">domain/entities/services/userApiServices.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI, FindUserI } = require('../dto/userInterface');
+const userRepository = require('../../repository/userRepository');
+const logger = require('../../../utils/logger');
+const { registerUserSchema, updateUserSchema, UserIdSchema, authUserSchema } = require('../schemas/userSchemas');
+const { getAjvInstace } = require('../../../utils/ajvSingleton');
+const ajv = getAjvInstace();
+const {
+  DatabaseDaoError,
+  NotFoundError,
+  ProcessingRequestError,
+  AuthenticationError,
+  ConflictError,
+} = require('../../../data/api/http_error_handler/httpErrors');
+
+/**
+ * Exporting the create service function used to create new users into the database
+ * @async
+ * @function create
+ * @returns http response
+ */
+exports.create = async (req, res, next) => {
+  /** Compiling the auth schema to validate the format of the user given by the auth midleware */
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
+  /** Compiling the user registry schema to validate the format of the user in the request body */
+  const ajv_userValidate = ajv.compile(registerUserSchema);
+  if (!ajv_userValidate(req.body)) {
+    logger.error('Data validation error, check the data');
+    return res
+      .status(400)
+      .send(
+        new ProcessingRequestError(
+          "Error cheking the input information, please check the information and required fields",
+          ajv_userValidate.errors
+        )
+      );
+  }
+
+  let newuser = req.body;
+  let answ1 = await userRepository.getAllUsrs(FindAllUserI());
+  if (!answ1[0]) {
+    return next(new DatabaseDaoError("Error on database getting all users"));
+  }
+
+  let cUserId = 0;
+  let users = answ1[1];
+  /**Checking if the user already exist in the database */
+  for (const key in users) {
+    if(users[key].email == newuser.email) return next(
+      new ConflictError('There is another user with the same email'));
+    if (users[key].userid > cUserId) {
+      cUserId = users[key].userid;
+    }
+  }
+
+  newuser['userid'] = cUserId + 1
+  const params = await InsertUserI(newuser);
+  /**Creating the new user in the database */
+  let answ2 = await userRepository.createUsr(params);
+  if (!answ2[0]) {
+    return next(new DatabaseDaoError("Error on database creating the user"));
+  }
+
+  return res.status(201).send({
+    message: 'User has been created successfully'
+  });
+}
+
+/**
+ * Exporting the update service function used to update an users into the database
+ * @async
+ * @function update
+ * @returns http response
+ */
+exports.update = async (req, res, next) => {
+  /** Compiling the auth schema to validate the format of the user given by the auth midleware */
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
+  /** Compiling the update user schema to validate the format of the user in the request body */
+  const ajv_userValidate = ajv.compile(updateUserSchema);
+  if (!ajv_userValidate(req.body)) {
+    logger.error('Data validation error, check the data');
+    return res
+      .status(400)
+      .send(
+        new ProcessingRequestError(
+          "Error cheking the input information, please check the information and required fields",
+          ajv_userValidate.errors
+        )
+      );
+  }
+
+  let user = req.body;
+  const params = UpdateUserI(user);
+  /** Updating the user in the database */
+  let answ = await userRepository.updateUsr(params);
+  if (!answ[0]) {
+    return next(new DatabaseDaoError("Error on database updating the user"));
+  }
+
+  return res.status(200).send({
+    message: 'User has been updated successfully'
+  });
+}
+
+/**
+ * Exporting the get all users service function used to get the users into the database
+ * @async
+ * @function findAll
+ * @returns http response
+ */
+exports.findAll = async (req, res, next) => {
+  /** Compiling the auth schema to validate the format of the user given by the auth midleware */
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
+  const params = FindAllUserI();
+  /** Getting the users in database */
+  let answ = await userRepository.getAllUsrs(params);
+  if (answ[0] === false) {
+    return next(new DatabaseDaoError("Error on database getting all users"));
+  }
+  /** Checking if exist users in database */
+  if (answ[1] === undefined) {
+    return res.status(404).send(
+      new NotFoundError("Error - there is no User")
+    );
+  }
+  return res.status(200).send({
+    message: 'Users found',
+    data: answ[1]
+  });
+}
+
+/**
+ * Exporting the delete service function used to delete an user into the database
+ * @async
+ * @function delete
+ * @returns http response
+ */
+exports.delete = async (req, res, next) => {
+  /** Compiling the auth schema to validate the format of the user given by the auth midleware */
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
+  /** Compiling the userid schema to validate the queryparam format in the request */
+  const ajv_userValidate = ajv.compile(UserIdSchema);
+  if (!ajv_userValidate(req.query)) {
+    logger.error('Data validation error, check the data');
+    return res
+      .status(400)
+      .send(
+        new ProcessingRequestError(
+          "Error cheking the input information, please check the information and required fields",
+          ajv_userValidate.errors
+        )
+      );
+  }
+  let userid = req.query.userid;
+  let params = FindUserI(userid);
+  /** Getting user by id before to delete the user*/
+  let answ = await userRepository.getUserById(params);
+  if (answ[0] === false) {
+    return next(new DatabaseDaoError("Error on database getting the user"));
+  }
+  /** checking if the user exist in the database*/
+  if (answ[1] === undefined) {
+    return res.status(404).send(
+      new NotFoundError("Error - this user does not exist, please check the data")
+    );
+  }
+  let user = answ[1];
+  params = DeleteUserI(user);
+  /** Deleting the user  from the database*/
+  answ = await userRepository.deleteUsr(params);
+  if (!answ[0]) {
+    return next(new DatabaseDaoError("Error on database deleting the user"));
+  }
+
+  return res.status(200).send({
+    message: 'User has been deleted successfully'
+  });
+}
+
+/**
+ * Exporting the get by id service function used to get an user from the database
+ * @async
+ * @function findById
+ * @returns http response
+ */
+exports.findById = async (req, res, next) => {
+  /** Compiling the auth schema to validate the format of the user given by the auth midleware */
+  const ajv_authValidate = ajv.compile(authUserSchema);
+  if(!ajv_authValidate(req.user)) return res.status(401).send(
+    new AuthenticationError('Invalid User or password, please check!')
+  );
+  /** Compiling the userid schema to validate the queryparam format in the request */
+  const ajv_userValidate = ajv.compile(UserIdSchema);
+  if (!ajv_userValidate(req.query)) {
+    logger.error('Data validation error, check the data');
+    return res
+      .status(400)
+      .send(
+        new ProcessingRequestError(
+          "Error cheking the input information, please check the information and required fields",
+          ajv_userValidate.errors
+        )
+      );
+  }
+
+  let userid = req.query.userid 
+  const params = FindUserI(userid);
+  /**Getting the user by id from the database */
+  let answ = await userRepository.getUserById(params);
+  if (answ[0] === false) {
+    return next(new DatabaseDaoError("Error on database getting the user"));
+  }
+  /** checking if the user exist in the database*/
+  if (answ[1] === undefined) {
+    return res.status(404).send(
+      new NotFoundError("Error - this user does not exist, please check the data")
+    );
+  }
+  return res.status(200).send({
+    message: 'User found',
+    data: answ[1]
+  });
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Jul 22 2021 21:04:22 GMT-0500 (Colombia Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

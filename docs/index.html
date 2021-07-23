@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationError.html">AuthenticationError</a></li><li></li><li><a href="AuthorizationError.html">AuthorizationError</a></li><li><a href="ConflictError.html">ConflictError</a></li><li></li><li><a href="DatabaseDaoError.html">DatabaseDaoError</a></li><li><a href="FileTypeError.html">FileTypeError</a></li><li><a href="FulfillPreconditionError.html">FulfillPreconditionError</a></li><li></li><li><a href="HttpError.html">HttpError</a></li><li><a href="MethodAvailabilityError.html">MethodAvailabilityError</a></li><li></li><li><a href="NotFoundError.html">NotFoundError</a></li><li><a href="ProcessingEntityError.html">ProcessingEntityError</a></li><li><a href="ProcessingRequestError.html">ProcessingRequestError</a></li><li><a href="RequestDependencyError.html">RequestDependencyError</a></li><li><a href="ServerAvailabilityError.html">ServerAvailabilityError</a></li><li><a href="ServerError.html">ServerError</a></li></ul><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-awsConfig.html">awsConfig</a></li><li><a href="module-clientDB.html">clientDB</a></li><li><a href="module-GeneralErrors.html">GeneralErrors</a></li><li><a href="module-getAjvInstace.html">getAjvInstace</a></li><li><a href="module-getValidDDBObject.html">getValidDDBObject</a></li><li><a href="module-HttpErros.html">HttpErros</a></li><li><a href="module-looger.html">looger</a></li><li><a href="module-morgan.html">morgan</a></li><li><a href="module-passportBasic.html">passportBasic</a></li><li><a href="module-router.html">router</a></li></ul><h3>Global</h3><ul><li><a href="global.html#authStrategy">authStrategy</a></li><li><a href="global.html#authUserSchema">authUserSchema</a></li><li><a href="global.html#awsConfig">awsConfig</a></li><li><a href="global.html#basicAuth">basicAuth</a></li><li><a href="global.html#buildAtributesExpression">buildAtributesExpression</a></li><li><a href="global.html#buildExpression">buildExpression</a></li><li><a href="global.html#buildExpressionNames">buildExpressionNames</a></li><li><a href="global.html#checkExist">checkExist</a></li><li><a href="global.html#clientDB">clientDB</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#createUsr">createUsr</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#DeleteUserI">DeleteUserI</a></li><li><a href="global.html#deleteUsr">deleteUsr</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#findAll">findAll</a></li><li><a href="global.html#FindAllUserI">FindAllUserI</a></li><li><a href="global.html#findById">findById</a></li><li><a href="global.html#FindUserI">FindUserI</a></li><li><a href="global.html#getAllUsrs">getAllUsrs</a></li><li><a href="global.html#getReadableObject">getReadableObject</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#InsertUserI">InsertUserI</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#passportBasic">passportBasic</a></li><li><a href="global.html#prettyJson">prettyJson</a></li><li><a href="global.html#registerUserSchema">registerUserSchema</a></li><li><a href="global.html#routeNotFound">routeNotFound</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#UpdateUserI">UpdateUserI</a></li><li><a href="global.html#updateUserSchema">updateUserSchema</a></li><li><a href="global.html#updateUsr">updateUsr</a></li><li><a href="global.html#UserIdSchema">UserIdSchema</a></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+    <section class="package">
+        <h3> </h3>		
+    </section>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    <section class="readme usertext">
+        <article><h1>TTB - Prueba técnica Bancolombia</h1>
+<p><em>Este proyecto está basado en una API REST la cual contiene un CRUD de usuario implementado una base de datos Dynamo en AWS, adicionalmente esta dockerizada y lista para su despliegue en una instancia linux de AWS (EC2)</em></p>
+<p><em>La aplicación cuenta con los siguientes métodos:</em></p>
+<ul>
+<li>[POST /api/user] - Este método permite crear un usuario recibiendo como parámetro de entrada un objeto JSON con la siguiente estructura:</li>
+</ul>
+<pre class="prettyprint source lang-json"><code>{
+   &quot;username&quot;: &quot;Johnny&quot;,
+   &quot;age&quot;: 28,
+   &quot;password&quot;: &quot;Admin12345&quot;,
+   &quot;email&quot;: &quot;jhonny.smith@example.com&quot;
+}
+</code></pre>
+<ul>
+<li>[GET /api/users] - Este método permite consultar la lista de usuarios almacenados en base de datos.
+Respuesta:</li>
+</ul>
+<pre class="prettyprint source lang-json"><code>{
+   &quot;message&quot;: &quot;Users found&quot;,
+   &quot;data&quot;: {
+       &quot;1&quot;: {
+           &quot;username&quot;: &quot;Johnny&quot;,
+           &quot;email&quot;: &quot;jhonny.smith@example.com&quot;,
+           &quot;userid&quot;: 1,
+           &quot;age&quot;: 28
+       }
+   }
+}
+</code></pre>
+<ul>
+<li>[GET /api/user] - Este método  permite consultar un usuario específico enviando como queryparam userid={ID del usuario}.
+Respuesta:</li>
+</ul>
+<pre class="prettyprint source lang-json"><code>{
+   &quot;message&quot;: &quot;User found&quot;,
+   &quot;data&quot;: {
+           &quot;username&quot;: &quot;Johnny&quot;,
+           &quot;email&quot;: &quot;jhonny.smith@example.com&quot;,
+           &quot;userid&quot;: 1,
+           &quot;age&quot;: 28
+       }
+   }
+}
+</code></pre>
+<ul>
+<li>
+<p>[PUT /api/user] - Este método permite actualizar la información del usuario como username, age ya que el userid y el email son usados como primary key y sort key.</p>
+</li>
+<li>
+<p>[DELETE /api/user] - Este método permite eliminar un usuario de la base de datos enviando como queryparam userid={ID del usuario}</p>
+</li>
+</ul>
+<p>[Nota]: Para hacer uso de los métodos se deberá realizar una autenticación básica (&quot;Authorization&quot;, &quot;basic &quot;) usando el email como usuario y el password con el que se creó el usuario.</p>
+<h2>- Instrucciones de instalación</h2>
+<p><em>Para hacer uso de este proyecto debes seguir los siguientes pasos</em></p>
+<h2>- Clonar el repositorio</h2>
+<pre class="prettyprint source"><code>git clone https://github.com/jorgestivenm/TTB.git
+</code></pre>
+<h2>- Instalar las dependencias</h2>
+<p><em>Para instalar las dependencias deberás tener instalado Node.js</em></p>
+<pre class="prettyprint source"><code>npm install
+</code></pre>
+<h2>- Iniciar la aplicación</h2>
+<p><em>Para iniciar la aplicación se tienen dos alternativas:</em></p>
+<h3>- Desarrollo</h3>
+<pre class="prettyprint source"><code>npm run dev
+</code></pre>
+<h3>- Producción</h3>
+<pre class="prettyprint source"><code>npm start
+</code></pre>
+<h2>- Iniciar Test</h2>
+<p><em>Para probar la API se crearon unos test con Supertest y Jest.js. Estos test prueban en total 20 situaciones diferentes con códigos de respuesta como [200,201,400,401,404,409]</em></p>
+<pre class="prettyprint source"><code>npm test
+</code></pre>
+<h2>Autores ✒️</h2>
+<ul>
+<li><strong>Jorge Steven Martínez Osorio</strong></li>
+</ul>
+<h1>Licencia 📄</h1>
+<p>Este proyecto está bajo la Licencia (MIT) - mira el archivo <a href="LICENSE.md">LICENSE.md</a> para detalles.</p></article>
+    </section>
+
+
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Jul 22 2021 21:04:22 GMT-0500 (Colombia Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

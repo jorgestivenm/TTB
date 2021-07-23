@@ -1,0 +1,18 @@
+{
+  "plugins": [],
+  "source": {
+    "include": ["src", "src/auth_config", "src/data/api/controllers", "src/data/api/routes", "src/data/api/http_error_handler", "src/data/db", "src/domain/entities/dto", "src/domain/entities/schemas", "src/domain/entities/services", "src/domain/error_handler", "src/domain/repository", "src/utils"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(node_modules|docs)"
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "opts": {
+    "recure": "true",
+    "destination": "./docs",
+    "template": "node_modules/docdash",
+    "readme": "./README.md"
+  }
+}
