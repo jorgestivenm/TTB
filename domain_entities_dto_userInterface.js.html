@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>domain/entities/dto/userInterface.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationError.html">AuthenticationError</a></li><li></li><li><a href="AuthorizationError.html">AuthorizationError</a></li><li><a href="ConflictError.html">ConflictError</a></li><li></li><li><a href="DatabaseDaoError.html">DatabaseDaoError</a></li><li><a href="FileTypeError.html">FileTypeError</a></li><li><a href="FulfillPreconditionError.html">FulfillPreconditionError</a></li><li></li><li><a href="HttpError.html">HttpError</a></li><li><a href="MethodAvailabilityError.html">MethodAvailabilityError</a></li><li></li><li><a href="NotFoundError.html">NotFoundError</a></li><li><a href="ProcessingEntityError.html">ProcessingEntityError</a></li><li><a href="ProcessingRequestError.html">ProcessingRequestError</a></li><li><a href="RequestDependencyError.html">RequestDependencyError</a></li><li><a href="ServerAvailabilityError.html">ServerAvailabilityError</a></li><li><a href="ServerError.html">ServerError</a></li></ul><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-awsConfig.html">awsConfig</a></li><li><a href="module-clientDB.html">clientDB</a></li><li><a href="module-GeneralErrors.html">GeneralErrors</a></li><li><a href="module-getAjvInstace.html">getAjvInstace</a></li><li><a href="module-getValidDDBObject.html">getValidDDBObject</a></li><li><a href="module-HttpErros.html">HttpErros</a></li><li><a href="module-looger.html">looger</a></li><li><a href="module-morgan.html">morgan</a></li><li><a href="module-passportBasic.html">passportBasic</a></li><li><a href="module-router.html">router</a></li></ul><h3>Global</h3><ul><li><a href="global.html#authStrategy">authStrategy</a></li><li><a href="global.html#authUserSchema">authUserSchema</a></li><li><a href="global.html#awsConfig">awsConfig</a></li><li><a href="global.html#basicAuth">basicAuth</a></li><li><a href="global.html#buildAtributesExpression">buildAtributesExpression</a></li><li><a href="global.html#buildExpression">buildExpression</a></li><li><a href="global.html#buildExpressionNames">buildExpressionNames</a></li><li><a href="global.html#checkExist">checkExist</a></li><li><a href="global.html#clientDB">clientDB</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#createUsr">createUsr</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#DeleteUserI">DeleteUserI</a></li><li><a href="global.html#deleteUsr">deleteUsr</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#findAll">findAll</a></li><li><a href="global.html#FindAllUserI">FindAllUserI</a></li><li><a href="global.html#findById">findById</a></li><li><a href="global.html#FindUserI">FindUserI</a></li><li><a href="global.html#getAllUsrs">getAllUsrs</a></li><li><a href="global.html#getReadableObject">getReadableObject</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#InsertUserI">InsertUserI</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#main">main</a></li><li><a href="global.html#passportBasic">passportBasic</a></li><li><a href="global.html#prettyJson">prettyJson</a></li><li><a href="global.html#registerUserSchema">registerUserSchema</a></li><li><a href="global.html#routeNotFound">routeNotFound</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#UpdateUserI">UpdateUserI</a></li><li><a href="global.html#updateUserSchema">updateUserSchema</a></li><li><a href="global.html#updateUsr">updateUsr</a></li><li><a href="global.html#UserIdSchema">UserIdSchema</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">domain/entities/dto/userInterface.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const AWS = require("aws-sdk");
+const table = "User2";
+const logger = require('../../../utils/logger');
+const bcrypt = require("bcrypt");
+
+/**
+ * Function to create the params object to insert user into the dynamoDB
+ * @async
+ * @function InsertUserI
+ * @param {object} data User data
+ * @returns {object} DynamoDB parameters
+ */
+const InsertUserI = async (data) => {
+  // generate salt to hash password
+  const salt = await bcrypt.genSalt(10);
+  /**now we set user password to hashed password to store just the hash */
+  data.password = await bcrypt.hash(data.password, salt);
+  let item = AWS.DynamoDB.Converter.marshall(data)
+
+  return {
+    TableName: table,
+    Item: item
+  }
+};
+
+/**
+ * Function to create the params object to delete user from the dynamoDB
+ * @function DeleteUserI
+ * @param {object} data User data
+ * @returns {object} DynamoDB parameters
+ */
+const DeleteUserI = (data) => {
+  key = {
+    userid: data.userid,
+    email: data.email,
+  }
+  return {
+    Key: AWS.DynamoDB.Converter.marshall(key),
+    TableName: table
+  }
+};
+/**
+ * Function to create the params object to update user into the dynamoDB.
+ * Just is possible  to update the age and usename, email and userid will be used to perform the query 
+ * @function UpdateUserI
+ * @param {object} data User data
+ * @returns {object} DynamoDB parameters
+ */
+const UpdateUserI = (data) => {
+  /**
+   * This function builds the ExpressionNames used in the dynamoDB params
+   * @function buildExpressionNames
+   * @param {object}} obj 
+   * @returns {object} Segment of dynamoDB parameters
+   */
+  function buildExpressionNames (obj) {
+    let keys = Object.keys(obj);
+    let attNames = {};
+    for (i = 0; i &lt; keys.length; i++) {
+      let expatt = String.fromCharCode(65+i);
+      attNames[`#${expatt}`] = `${keys[i]}`;
+    }
+    return attNames;
+  };
+  
+    /**
+   * This function builds the query expression used in the dynamoDB params
+   * @function buildExpression
+   * @param {object}} obj 
+   * @returns {object} Segment of dynamoDB parameters
+   */
+  function buildExpression (obj) {
+    let keys = Object.keys(obj);
+    let expstring = "set";
+    
+    for (i = 0; i &lt; keys.length; i++) {
+      let expatt = String.fromCharCode(97+i);
+      let expatt2 = String.fromCharCode(65+i);
+      expstring = expstring.concat(' ',`#${expatt2} = :${expatt}`);
+      if (i != keys.length - 1) {
+        expstring = expstring + ',';
+      }
+    }
+    return expstring;
+  };
+  
+    /**
+   * This function builds the AttributesExpression used in the dynamoDB params
+   * @function buildAtributesExpression
+   * @param {object}} obj 
+   * @returns {object} Segment of dynamoDB parameters
+   */
+  function buildAtributesExpression (obj ) {
+    let values = Object.values(obj);
+    let attValues = {};
+    for (i = 0; i &lt; values.length; i++) {
+      let expatt = String.fromCharCode(97+i);
+      attValues[`:${expatt}`] = values[i]
+    }
+    return attValues;
+  };
+
+  let uid = data.userid;
+  let uemail = data.email;
+  delete data.email;
+  delete data.userid;
+
+  return {
+    TableName: table,
+    Key: AWS.DynamoDB.Converter.marshall({
+      userid: uid,
+      email: uemail,
+    }),
+    // Define expressions for the new or updated attributes
+    UpdateExpression: buildExpression(data),
+    // Define expression values for the new updated attibutes
+    ExpressionAttributeValues: AWS.DynamoDB.Converter.marshall(buildAtributesExpression(data)),
+    // Define the expression names for the new updated attributes
+    ExpressionAttributeNames: buildExpressionNames(data)
+  }
+};
+
+/**
+ * This function creates the params to get allusers in the database
+ * @function FindAllUserI
+ * @returns {object} DynamoDB parameters
+ */
+const FindAllUserI = () => {
+  let params = {
+    TableName: table,
+  }; 
+  return params
+};
+
+/**
+ * Function to create the params object to get user by id from the dynamoDB.
+ * @function FindUserI
+ * @param {object} data User data
+ * @returns {object} DynamoDB parameters
+ */
+const FindUserI = (data) => {
+  
+  let params = {
+    TableName : table,
+    KeyConditionExpression   : "userid = :v ",
+    ExpressionAttributeValues: {
+      ":v": {N: data}
+  }
+}; 
+  return params
+};
+
+module.exports =  { InsertUserI, DeleteUserI, UpdateUserI, FindAllUserI, FindUserI };</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Jul 22 2021 21:04:22 GMT-0500 (Colombia Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
