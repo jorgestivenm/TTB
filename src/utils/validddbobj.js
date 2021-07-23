@@ -17,5 +17,8 @@ const getValidDDBObject = pipe(
   ),
   JSON.parse
 );
-
+/**
+ * Exporting an AWS validator schema to check the items from dynamoDB
+ * @module getValidDDBObject
+ */
 module.exports = getValidDDBObject;

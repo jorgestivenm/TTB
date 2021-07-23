@@ -1,4 +1,4 @@
-
+/**Exporting the register user shcema */
 exports.registerUserSchema = {
   type: "object",
   properties: {
@@ -20,6 +20,7 @@ exports.registerUserSchema = {
   additionalProperties: false
 };
 
+/**Exporting the update user shcema */
 exports.updateUserSchema = {
   type: "object",
   properties: {
@@ -38,6 +39,7 @@ exports.updateUserSchema = {
   additionalProperties: false
 };
 
+/**Exporting the param userid shcema */
 exports.UserIdSchema = {
   type: "object",
   properties: {
@@ -47,6 +49,7 @@ exports.UserIdSchema = {
   additionalProperties: false
 };
 
+/**Exporting the authentication user shcema */
 exports.authUserSchema = {
   type: "object",
   properties: {

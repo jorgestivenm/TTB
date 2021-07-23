@@ -93,3 +93,6 @@ dist
 
 # vscode config
 .vscode
+
+# privatekeys
+*.pem

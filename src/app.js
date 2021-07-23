@@ -8,11 +8,11 @@ const {
   routeNotFound,
 } = require('./domain/error_handler/errorHandler');
 
-
+/** Setting express with http logger */
 app.use(httpLogger);
-
+/**Setting express to use JSON */
 app.use(express.json());
-
+/**Setting express to use urlencode */
 app.use(
   express.urlencoded({
     extended: true,
@@ -20,16 +20,21 @@ app.use(
     inflate: false,
   })
 );
-
+/**Setting express to use CORS */
 app.use(
   cors({
     // exposedHeaders: ['filename', 'userSettings', 'app-language'],
   })
 );
 
+/**Setting express with the exposed routes */
 app.use('/api', router_api)
-
+/**Setting express to manage erros */
 app.use(routeNotFound);
 app.use(errorHandler);
 
+/**
+ * Exporting the app module after adding the basic configuration 
+ * @module app
+ */
 module.exports = app;

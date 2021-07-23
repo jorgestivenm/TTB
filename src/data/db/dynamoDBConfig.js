@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+/** AWS config object */
 const awsConfig = {
   region: process.env.REGION,
   endpoint: process.env.ENDPOINT,
@@ -7,4 +8,8 @@ const awsConfig = {
   secretAccessKey: process.env.SECRET_ACCESS_KEY_AWS
 };
 
+/**
+ * Exporting the AWS dynamoDB configuration
+ * @module awsConfig
+ */
 module.exports = awsConfig;
